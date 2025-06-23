@@ -1,6 +1,3 @@
-import React, { ReactNode } from "react";
-import { act } from "react";
-// import {ReactDOM} from "react-dom/client";
 import {
   AppointmentEntry,
   AppointmentsDayView,
@@ -8,15 +5,11 @@ import {
 import { Container, createRoot } from "react-dom/client";
 import type { Appointment } from "../src/types/customer";
 import { sampleAppointments } from "../src/sampleData";
+import { click, initializeReactContainer, render } from "./reactTestExtensions";
 describe("AppointmentEntry", () => {
-  let container: Container;
   beforeEach(() => {
-    container = document.createElement("div");
-    document.body.replaceChildren(container);
+    initializeReactContainer();
   });
-
-  const render = (component: ReactNode) =>
-    act(() => createRoot(container).render(component));
 
   it("renders the customer first name", () => {
     const appointment = sampleAppointments[0];
@@ -67,14 +60,9 @@ describe("AppointmentsDayView", () => {
     },
   ];
 
-  let container: Container;
   beforeEach(() => {
-    container = document.createElement("div");
-    document.body.replaceChildren(container);
+    initializeReactContainer();
   });
-
-  const render = (component: ReactNode) =>
-    act(() => createRoot(container).render(component));
 
   it("renders a div with the right id", () => {
     render(<AppointmentsDayView appointments={[]} />);
@@ -132,7 +120,7 @@ describe("AppointmentsDayView", () => {
     const button = document.querySelectorAll(
       "li > button"
     )[1] as HTMLButtonElement;
-    act(() => button.click());
+    click(button);
 
     expect(document.body.textContent).toContain("Jordan");
   });
