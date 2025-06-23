@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "types": ["jest"],
+        "jsx": "react-jsx",
+        // "allowImportingTsExtensions": true,
+        "target": "es6",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true
+    },
+    "include": ["test"]
+}
