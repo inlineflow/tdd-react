@@ -11,6 +11,14 @@
   "license": "ISC",
   "packageManager": "pnpm@10.11.1",
   "dependencies": {
-    "jest": "^30.0.2"
+    "jest": "^30.0.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.27.4",
+    "@babel/preset-env": "^7.27.2",
+    "@babel/preset-react": "^7.27.1",
+    "@babel/runtime": "^7.27.6"
   }
 }
