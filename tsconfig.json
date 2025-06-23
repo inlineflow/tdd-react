@@ -1,14 +1,15 @@
 {
     "compilerOptions": {
-        "types": ["jest"],
+        "types": ["jest", "node"],
         "jsx": "react-jsx",
         // "allowImportingTsExtensions": true,
-        "target": "es6",
-        "module": "esnext",
+        "target": "es2016",
+        "module": "commonjs",
+        "strict": true,
         "moduleResolution": "node",
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
     },
-    "include": ["test"]
+      "include": ["src/**/*.ts", "tests/**/*.ts"]
 }

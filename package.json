@@ -13,7 +13,9 @@
   "dependencies": {
     "jest": "^30.0.2",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "ts-jest": "^29.4.0",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.27.4",
@@ -21,12 +23,9 @@
     "@babel/preset-react": "^7.27.1",
     "@babel/runtime": "^7.27.6",
     "@types/jest": "^30.0.0",
+    "@types/node": "^24.0.3",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
     "jest-environment-jsdom": "^30.0.2"
-  },
-  "jest": {
-    "testEnvironment": "jsdom",
-    "globals": {
-      "IS_REACT_ACT_ENVIRONMENT": true
-    }
   }
 }
