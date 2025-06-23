@@ -1,2 +1,12 @@
-export type Customer = { firstName: string };
-export type AppointmentType = {startsAt: DateTime}
+export type Customer = { 
+    firstName: string;
+    lastName: string 
+};
+
+export type Appointment = {
+    startsAt: DateTime;
+    customer: Customer;
+    stylist: string;
+    service: string;
+    notes: string[];
+}
