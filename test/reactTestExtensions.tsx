@@ -25,6 +25,7 @@ type inputType = HTMLInputElement | HTMLButtonElement;
 export const typesOf = (items: inputType[]) => items.map((i) => i.type);
 
 export const form = (id?: string) => element("form") as HTMLFormElement;
+
 export const formElement = <T,>(
   id: string,
   type: new (...args: any[]) => T
@@ -34,4 +35,13 @@ export const formElement = <T,>(
     return item as T;
   }
   throw new Error(`${id} not found in form children`);
+};
+
+export const submit = (formElement: HTMLElement) => {
+  const event = new Event("submit", {
+    bubbles: true,
+    cancelable: true,
+  });
+  act(() => formElement.dispatchEvent(event));
+  return event;
 };

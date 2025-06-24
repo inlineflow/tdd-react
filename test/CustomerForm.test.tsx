@@ -5,6 +5,8 @@ import {
   element,
   form,
   formElement as field,
+  click,
+  submit,
 } from "./reactTestExtensions";
 import { CustomerForm } from "../src/CustomerForm";
 import { Customer } from "../src/types/customer";
@@ -52,5 +54,35 @@ describe("CustomerForm", () => {
   it("assigns an id that matches the label id to the first name field", () => {
     render(<CustomerForm original={blankCustomer} />);
     expect(field("firstName", HTMLInputElement).id).toEqual("firstName");
+  });
+
+  it("renders a submit button", () => {
+    render(<CustomerForm original={blankCustomer} />);
+    const button = element("input[type=submit]");
+
+    expect(button).not.toBeNull();
+  });
+
+  it("saves existing first name when submitted", () => {
+    expect.hasAssertions();
+    const customer: Customer = { firstName: "Ashley", lastName: "Johnson" };
+    render(
+      <CustomerForm
+        original={customer}
+        onSubmit={({ firstName }: { firstName: string }) =>
+          expect(firstName).toEqual("Ashley")
+        }
+      />
+    );
+
+    const button = element("input[type=submit]") as HTMLButtonElement;
+    click(button);
+  });
+
+  it("prevents the default action when submitting the form", () => {
+    render(<CustomerForm original={blankCustomer} onSubmit={() => {}} />);
+    const event = submit(form());
+
+    expect(event.defaultPrevented).toBe(true);
   });
 });

@@ -2,7 +2,6 @@ import {
   AppointmentEntry,
   AppointmentsDayView,
 } from "../src/AppointmentDaysView";
-import { Container, createRoot } from "react-dom/client";
 import type { Appointment } from "../src/types/customer";
 import { sampleAppointments } from "../src/sampleData";
 import {
