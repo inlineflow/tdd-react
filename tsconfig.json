@@ -11,5 +11,9 @@
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
     },
-      "include": ["src/**/*.ts", "tests/**/*.ts", "src/index.tsx"]
+    "files": [
+        "./test/matchers/domMatchers.ts"
+    ],
+      "include": ["src/**/*.ts", "src/**/*.tsx", "test/**/*.ts","test/**/*.tsx", "test/**/*.d.ts", "test/jest.d.ts"],
+      "exclude": ["node_modules"]
 }

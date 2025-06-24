@@ -11,6 +11,9 @@ importers:
       jest:
         specifier: ^30.0.2
         version: 30.0.2(@types/node@24.0.3)(ts-node@10.9.2(@types/node@24.0.3)(typescript@5.8.3))
+      jest-matcher-utils:
+        specifier: ^30.0.2
+        version: 30.0.2
       react:
         specifier: ^19.1.0
         version: 19.1.0

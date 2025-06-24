@@ -6,6 +6,7 @@ import { Container, createRoot } from "react-dom/client";
 import type { Appointment } from "../src/types/customer";
 import { sampleAppointments } from "../src/sampleData";
 import { click, initializeReactContainer, render } from "./reactTestExtensions";
+// import { toContainText } from "./matchers/toContainText";
 describe("AppointmentEntry", () => {
   beforeEach(() => {
     initializeReactContainer();
@@ -16,7 +17,7 @@ describe("AppointmentEntry", () => {
 
     render(<AppointmentEntry {...appointment} />);
 
-    expect(document.body.textContent).toContain("Ashley");
+    expect(document.body).toContainText("Ashley");
   });
 
   it("renders another customer first name", () => {
