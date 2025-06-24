@@ -13,3 +13,12 @@ export const render = (component: ReactNode) =>
 export const click = (element: HTMLButtonElement) => {
   act(() => element.click());
 };
+
+export const element = (query: string) => document.querySelector(query);
+
+export const elements = (query: string) => [
+  ...document.querySelectorAll(query),
+];
+export const textOf = (items: Element[]) => items.map((i) => i.textContent);
+type inputType = HTMLInputElement | HTMLButtonElement;
+export const typesOf = (items: inputType[]) => items.map((i) => i.type);

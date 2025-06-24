@@ -5,7 +5,15 @@ import {
 import { Container, createRoot } from "react-dom/client";
 import type { Appointment } from "../src/types/customer";
 import { sampleAppointments } from "../src/sampleData";
-import { click, initializeReactContainer, render } from "./reactTestExtensions";
+import {
+  click,
+  element,
+  elements,
+  initializeReactContainer,
+  render,
+  textOf,
+  typesOf,
+} from "./reactTestExtensions";
 // import { toContainText } from "./matchers/toContainText";
 describe("AppointmentEntry", () => {
   beforeEach(() => {
@@ -24,21 +32,21 @@ describe("AppointmentEntry", () => {
     const appointment = sampleAppointments[1];
     render(<AppointmentEntry {...appointment} />);
 
-    expect(document.body.textContent).toContain("Jordan");
+    expect(document.body).toContainText("Jordan");
   });
 
   it("renders customer last name", () => {
     const appointment = sampleAppointments[0];
     render(<AppointmentEntry {...appointment} />);
 
-    expect(document.body.textContent).toContain("Kaylegh");
+    expect(document.body).toContainText("Kaylegh");
   });
 
   it("renders the stylist", () => {
     const appointment = sampleAppointments[0];
     render(<AppointmentEntry {...appointment} />);
 
-    expect(document.body.textContent).toContain("Ethan Patel");
+    expect(document.body).toContainText("Ethan Patel");
   });
 });
 
@@ -61,6 +69,8 @@ describe("AppointmentsDayView", () => {
     },
   ];
 
+  const secondButton = () => elements("button")[1] as HTMLButtonElement;
+
   beforeEach(() => {
     initializeReactContainer();
   });
@@ -68,33 +78,31 @@ describe("AppointmentsDayView", () => {
   it("renders a div with the right id", () => {
     render(<AppointmentsDayView appointments={[]} />);
 
-    expect(document.querySelector("div#appointmentsDayView")).not.toBeNull();
+    expect(element("div#appointmentsDayView")).not.toBeNull();
   });
 
   it("renders an ol element to display appointments", () => {
     render(<AppointmentsDayView appointments={[]} />);
 
-    expect(document.querySelector("ol")).not.toBeNull();
+    expect(element("ol")).not.toBeNull();
   });
 
   it("renders an li for each appointment", () => {
     render(<AppointmentsDayView appointments={appointments} />);
 
-    const listChildren = document.querySelectorAll("ol > li");
+    const listChildren = elements("li");
     expect(listChildren).toHaveLength(2);
   });
 
   it("renders the time of each appointment", () => {
     render(<AppointmentsDayView appointments={appointments} />);
-    const listChildren = document.querySelectorAll("ol > li");
-    expect(listChildren[0].textContent).toEqual("12:00");
-    expect(listChildren[1].textContent).toEqual("13:00");
+    expect(textOf(elements("li"))).toEqual(["12:00", "13:00"]);
   });
 
   it("initially shows a message saying there are no appointments today", () => {
     render(<AppointmentsDayView appointments={[]} />);
 
-    expect(document.body.textContent).toContain(
+    expect(document.body).toContainText(
       "There are no appointments scheduled for today."
     );
   });
@@ -102,28 +110,23 @@ describe("AppointmentsDayView", () => {
   it("selects the first appointment by default", () => {
     render(<AppointmentsDayView appointments={appointments} />);
 
-    expect(document.body.textContent).toContain("Ashley");
+    expect(document.body).toContainText("Ashley");
   });
 
   it("has a <button> element in each <li>", () => {
     render(<AppointmentsDayView appointments={appointments} />);
 
-    const buttons = document.querySelectorAll(
-      "li > button"
-    ) as NodeListOf<HTMLButtonElement>;
+    const buttons = elements("li > *") as HTMLButtonElement[];
     expect(buttons).toHaveLength(2);
-    expect(buttons[0].type).toEqual("button");
+    expect(typesOf(buttons)).toEqual(["button", "button"]);
   });
 
   it("renders another element when selected", () => {
     render(<AppointmentsDayView appointments={appointments} />);
+    click(secondButton());
+    // expect(secondButton()).toHaveClass("toggled");
 
-    const button = document.querySelectorAll(
-      "li > button"
-    )[1] as HTMLButtonElement;
-    click(button);
-
-    expect(document.body.textContent).toContain("Jordan");
+    expect(document.body).toContainText("Jordan");
   });
 });
 
