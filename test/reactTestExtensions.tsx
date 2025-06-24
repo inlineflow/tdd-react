@@ -20,5 +20,18 @@ export const elements = (query: string) => [
   ...document.querySelectorAll(query),
 ];
 export const textOf = (items: Element[]) => items.map((i) => i.textContent);
+
 type inputType = HTMLInputElement | HTMLButtonElement;
 export const typesOf = (items: inputType[]) => items.map((i) => i.type);
+
+export const form = (id?: string) => element("form") as HTMLFormElement;
+export const formElement = <T,>(
+  id: string,
+  type: new (...args: any[]) => T
+) => {
+  const item = element(`form > [name=${id}]`);
+  if (item instanceof type) {
+    return item as T;
+  }
+  throw new Error(`${id} not found in form children`);
+};
