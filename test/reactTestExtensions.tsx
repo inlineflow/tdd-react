@@ -26,15 +26,28 @@ export const typesOf = (items: inputType[]) => items.map((i) => i.type);
 
 export const form = (id?: string) => element("form") as HTMLFormElement;
 
-export const formElement = <T,>(
-  id: string,
-  type: new (...args: any[]) => T
+type FormFieldTag = "input" | "select";
+type FormField = {
+  [K in FormFieldTag]: HTMLElementTagNameMap[K];
+};
+
+export const field = (
+  id: string
+  // type: new (...args: any[]) => T
 ) => {
-  const item = element(`form > [name=${id}]`);
-  if (item instanceof type) {
-    return item as T;
+  const item = element(`form [name=${id}]`);
+  if (!item) {
+    throw new Error(`${id} not found in form children`);
   }
-  throw new Error(`${id} not found in form children`);
+
+  const allowedTypes = [HTMLInputElement, HTMLSelectElement];
+  for (const x of allowedTypes) {
+    if (item instanceof x) {
+      return item;
+    }
+  }
+
+  throw new Error(`${id} not of type <input> or <button>`);
 };
 
 export const submit = (formElement: HTMLElement) => {
@@ -70,4 +83,8 @@ export const change = (target: HTMLElement, value: string) => {
     bubbles: true,
   });
   act(() => target.dispatchEvent(event));
+};
+
+export const labelFor = (fieldName: string) => {
+  return element(`label[for=${fieldName}]`);
 };

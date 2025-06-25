@@ -1,6 +1,7 @@
 export type Customer = { 
     firstName: string;
     lastName: string 
+    phoneNumber: string;
 };
 
 export type Appointment = {

@@ -54,14 +54,18 @@ describe("AppointmentsDayView", () => {
   const appointments: Appointment[] = [
     {
       startsAt: today.setHours(12, 0),
-      customer: { firstName: "Ashley", lastName: "Kaylegh" },
+      customer: {
+        firstName: "Ashley",
+        lastName: "Kaylegh",
+        phoneNumber: "1234",
+      },
       stylist: "Johnny",
       service: "Johnny's Hair Salon",
       notes: ["Come at least 15 minutes early"],
     },
     {
       startsAt: today.setHours(13, 0),
-      customer: { firstName: "Jordan", lastName: "Wilds" },
+      customer: { firstName: "Jordan", lastName: "Wilds", phoneNumber: "2345" },
       stylist: "Mark",
       service: "Mark's Hair Salon",
       notes: ["Come with treats"],

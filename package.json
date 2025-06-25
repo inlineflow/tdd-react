@@ -1,6 +1,7 @@
 {
   "name": "tdd-react",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,10 +13,12 @@
   "license": "ISC",
   "packageManager": "pnpm@10.11.1",
   "dependencies": {
+    "@tailwindcss/vite": "^4.1.10",
     "jest": "^30.0.2",
     "jest-matcher-utils": "^30.0.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "tailwindcss": "^4.1.10",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2"
   },
