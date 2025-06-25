@@ -1,5 +1,5 @@
 import { Customer } from "./types/customer";
-import { submit } from "../test/reactTestExtensions";
+import { useState } from "react";
 
 type Props = {
   original: Customer;
@@ -7,10 +7,16 @@ type Props = {
 };
 
 export const CustomerForm = ({ original, onSubmit }: Props) => {
+  const [customer, setCustomer] = useState(original);
+
+  const handleChangeFirstName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomer({ ...customer, firstName: e.target.value });
+  };
+
   const handleSubmit = onSubmit
     ? (event: React.FormEvent) => {
         event.preventDefault();
-        onSubmit(original);
+        onSubmit(customer);
       }
     : () => {};
   return (
@@ -20,8 +26,8 @@ export const CustomerForm = ({ original, onSubmit }: Props) => {
         type="text"
         name="firstName"
         id="firstName"
-        value={original.firstName}
-        readOnly
+        value={customer.firstName}
+        onChange={handleChangeFirstName}
       />
       {/* <button type="submit" /> */}
       <input type="submit" />

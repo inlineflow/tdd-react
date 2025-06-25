@@ -46,4 +46,28 @@ export const submit = (formElement: HTMLElement) => {
   return event;
 };
 
-export const submitButton = () => element("input[type=submit]");
+export const submitButton = () =>
+  element("input[type=submit]") as HTMLButtonElement;
+
+const originalValueProperty = (reactElement: HTMLElement) => {
+  const prototype = Object.getPrototypeOf(reactElement);
+  const descriptor = Object.getOwnPropertyDescriptor(prototype, "value");
+  if (descriptor === undefined) {
+    throw new Error(
+      `Passed argument has no 'value' property. Argument: ${reactElement}`
+    );
+  }
+  return descriptor;
+};
+
+export const change = (target: HTMLElement, value: string) => {
+  const descriptor = originalValueProperty(target);
+  if (!descriptor.set) {
+    throw new Error("Property 'value' doesn't have a 'set()' function");
+  }
+  descriptor.set.call(target, value);
+  const event = new Event("change", {
+    bubbles: true,
+  });
+  act(() => target.dispatchEvent(event));
+};
