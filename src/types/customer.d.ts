@@ -5,7 +5,7 @@ export type Customer = {
 };
 
 export type Appointment = {
-    startsAt: DateTime;
+    startsAt: number;
     customer: Customer;
     stylist: string;
     service: string;

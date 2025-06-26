@@ -9,6 +9,7 @@ type AppointmentFromProps = {
   salonClosesAt?: number;
   today?: Date;
   availableTimeSlots: TimeSlot[];
+  checkedTimeSlot: TimeSlot;
 };
 export const AppointmentForm = ({
   selectableServices = [
@@ -24,6 +25,7 @@ export const AppointmentForm = ({
   salonClosesAt = 19,
   today = new Date(),
   availableTimeSlots,
+  checkedTimeSlot,
 }: AppointmentFromProps) => (
   <div>
     <form>
@@ -43,8 +45,10 @@ export const AppointmentForm = ({
         salonClosesAt={salonClosesAt}
         today={today}
         availableTimeSlots={availableTimeSlots}
+        checkedTimeSlot={checkedTimeSlot}
       />
     </form>
+    <input type="submit" value="Add" />
   </div>
 );
 
@@ -94,12 +98,14 @@ type TimeSlotTableProps = {
   salonClosesAt: number;
   today: Date;
   availableTimeSlots: TimeSlot[];
+  checkedTimeSlot: TimeSlot;
 };
 const TimeSlotTable = ({
   salonOpensAt,
   salonClosesAt,
   today,
   availableTimeSlots,
+  checkedTimeSlot,
 }: TimeSlotTableProps) => {
   const timeSlots = dailyTimeSlots(salonOpensAt, salonClosesAt);
   const dates = weeklyDateValues(today);
@@ -124,6 +130,7 @@ const TimeSlotTable = ({
                   availableTimeSlots={availableTimeSlots}
                   date={date}
                   timeSlot={timeSlot}
+                  checkedTimeSlot={checkedTimeSlot}
                 />
               </td>
             ))}
@@ -138,20 +145,30 @@ type RadioButtonProps = {
   availableTimeSlots: TimeSlot[];
   date: number;
   timeSlot: number;
+  checkedTimeSlot: TimeSlot;
 };
 const RadioButtonIfAvailable = ({
   availableTimeSlots,
   date,
   timeSlot,
+  checkedTimeSlot,
 }: RadioButtonProps) => {
   const startsAt = mergeDateAndTime(date, timeSlot);
+  const isChecked = startsAt === checkedTimeSlot.startsAt;
 
   if (
     availableTimeSlots.some(
       (availableTimeSlot) => availableTimeSlot.startsAt === startsAt
     )
   ) {
-    return <input type="radio" name="startsAt" value={startsAt} />;
+    return (
+      <input
+        type="radio"
+        name="startsAt"
+        value={startsAt}
+        checked={isChecked}
+      />
+    );
   }
   return null;
 };
