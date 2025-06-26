@@ -5,15 +5,13 @@ import { sampleAppointments } from "./sampleData";
 import { CustomerForm } from "./CustomerForm";
 import { AppointmentForm } from "./AppointmentForm";
 import { Appointment } from "./types/customer";
+import { todayAt, tomorrowAt } from "../test/builders/time";
 
-const oneDayInMs = 24 * 60 * 60 * 1000;
-const today = new Date();
-const tomorrow = new Date(today.getTime() + oneDayInMs);
 const availableTimeSlots = [
-  { startsAt: today.setHours(9, 0, 0, 0) },
-  { startsAt: tomorrow.setHours(9, 30, 0, 0) },
-  { startsAt: tomorrow.setHours(10, 30, 0, 0) },
-  { startsAt: tomorrow.setHours(11, 30, 0, 0) },
+  { startsAt: todayAt(9) },
+  { startsAt: tomorrowAt(9, 30) },
+  { startsAt: tomorrowAt(10, 30) },
+  { startsAt: tomorrowAt(11, 30) },
 ];
 const appointment = sampleAppointments[0];
 
