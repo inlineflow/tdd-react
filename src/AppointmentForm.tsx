@@ -1,12 +1,14 @@
 import { Appointment } from "./types/customer";
 
+type TimeSlot = { startsAt: number };
+
 type AppointmentFromProps = {
   selectableServices?: string[];
   original: Appointment;
   salonOpensAt?: number;
   salonClosesAt?: number;
   today?: Date;
-  availableTimeSlots?: { startsAt: number }[];
+  availableTimeSlots: TimeSlot[];
 };
 export const AppointmentForm = ({
   selectableServices = [
@@ -91,13 +93,13 @@ type TimeSlotTableProps = {
   salonOpensAt: number;
   salonClosesAt: number;
   today: Date;
-  availableTimeSlots?: { startsAt: number }[];
+  availableTimeSlots: TimeSlot[];
 };
 const TimeSlotTable = ({
   salonOpensAt,
   salonClosesAt,
   today,
-  availableTimeSlots = [],
+  availableTimeSlots,
 }: TimeSlotTableProps) => {
   const timeSlots = dailyTimeSlots(salonOpensAt, salonClosesAt);
   const dates = weeklyDateValues(today);
@@ -118,14 +120,11 @@ const TimeSlotTable = ({
             <th>{toTimeValue(timeSlot)}</th>
             {dates.map((date) => (
               <td key={date}>
-                {availableTimeSlots.some(
-                  (availableTimeSlot) =>
-                    availableTimeSlot.startsAt ===
-                    mergeDateAndTime(date, timeSlot)
-                ) ? (
-                  <input type="radio" />
-                ) : null}
-                )
+                <RadioButtonIfAvailable
+                  availableTimeSlots={availableTimeSlots}
+                  date={date}
+                  timeSlot={timeSlot}
+                />
               </td>
             ))}
           </tr>
@@ -133,4 +132,26 @@ const TimeSlotTable = ({
       </tbody>
     </table>
   );
+};
+
+type RadioButtonProps = {
+  availableTimeSlots: TimeSlot[];
+  date: number;
+  timeSlot: number;
+};
+const RadioButtonIfAvailable = ({
+  availableTimeSlots,
+  date,
+  timeSlot,
+}: RadioButtonProps) => {
+  const startsAt = mergeDateAndTime(date, timeSlot);
+
+  if (
+    availableTimeSlots.some(
+      (availableTimeSlot) => availableTimeSlot.startsAt === startsAt
+    )
+  ) {
+    return <input type="radio" name="startsAt" value={startsAt} />;
+  }
+  return null;
 };
