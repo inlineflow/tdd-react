@@ -4,6 +4,9 @@ export type Customer = {
     phoneNumber: string;
 };
 
+
+export type TimeSlot = { startsAt: number };
+
 export type Appointment = {
     startsAt: number;
     customer: Customer;

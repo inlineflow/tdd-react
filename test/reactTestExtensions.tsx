@@ -10,7 +10,7 @@ export const initializeReactContainer = () => {
 export const render = (component: ReactNode) =>
   act(() => createRoot(container).render(component));
 
-export const click = (element: HTMLButtonElement) => {
+export const click = (element: HTMLButtonElement | HTMLInputElement) => {
   act(() => element.click());
 };
 

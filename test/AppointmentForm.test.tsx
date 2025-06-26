@@ -1,6 +1,7 @@
 import React, { HTMLInputTypeAttribute } from "react";
 import { AppointmentForm } from "../src/AppointmentForm";
 import {
+  click,
   element,
   elements,
   field,
@@ -9,14 +10,22 @@ import {
   render,
   submitButton,
 } from "./reactTestExtensions";
+import { Appointment, TimeSlot } from "../src/types/customer";
 
 describe("AppointmentForm", () => {
   beforeEach(() => {
     initializeReactContainer();
   });
 
+  const services = ["Cut", "Blow-dry"];
+  const today = new Date();
+  const availableTimeSlots = [
+    { startsAt: today.setHours(9, 0, 0, 0) },
+    { startsAt: today.setHours(9, 30, 0, 0) },
+  ];
+
   const blankAppointment = {
-    startsAt: new Date().getTime(),
+    startsAt: availableTimeSlots[0].startsAt,
     customer: {
       firstName: "",
       lastName: "",
@@ -26,12 +35,8 @@ describe("AppointmentForm", () => {
     service: "",
     notes: [],
   };
-  const services = ["Cut", "Blow-dry"];
-  const today = new Date();
-  const availableTimeSlots = [
-    { startsAt: today.setHours(9, 0, 0, 0) },
-    { startsAt: today.setHours(9, 30, 0, 0) },
-  ];
+  const startsAtField = (index: number) =>
+    elements("input[type=radio]")[index] as HTMLInputElement;
 
   const labelsOfAllOptions = (element: HTMLElement) =>
     Array.from(element.childNodes, (child) => child.textContent);
@@ -41,7 +46,7 @@ describe("AppointmentForm", () => {
       <AppointmentForm
         original={blankAppointment}
         availableTimeSlots={availableTimeSlots}
-        checkedTimeSlot={availableTimeSlots[0]}
+        onSubmit={() => {}}
       />
     );
     expect(form()).not.toBeNull();
@@ -52,17 +57,55 @@ describe("AppointmentForm", () => {
       <AppointmentForm
         original={blankAppointment}
         availableTimeSlots={availableTimeSlots}
-        checkedTimeSlot={availableTimeSlots[0]}
+        onSubmit={() => {}}
       />
     );
 
     expect(submitButton()).not.toBeNull();
   });
 
-  describe("service field", () => {
-    const startsAtField = (index: number) =>
-      elements("input[type=radio]")[index] as HTMLInputElement;
+  it("saves existing value when submitted", () => {
+    expect.hasAssertions();
 
+    const appointment = { ...blankAppointment };
+    appointment.startsAt = availableTimeSlots[1].startsAt;
+
+    render(
+      <AppointmentForm
+        original={appointment}
+        availableTimeSlots={availableTimeSlots}
+        onSubmit={({ startsAt }: Appointment) =>
+          expect(startsAt).toEqual(availableTimeSlots[1].startsAt)
+        }
+      />
+    );
+
+    const btnSubmit = submitButton();
+    click(btnSubmit);
+  });
+
+  it("saves a new value when submitted", () => {
+    expect.hasAssertions();
+
+    const appointment = { ...blankAppointment };
+    appointment.startsAt = availableTimeSlots[0].startsAt;
+
+    render(
+      <AppointmentForm
+        original={appointment}
+        availableTimeSlots={availableTimeSlots}
+        onSubmit={({ startsAt }: Appointment) =>
+          expect(startsAt).toEqual(availableTimeSlots[1].startsAt)
+        }
+      />
+    );
+
+    // const btnSubmit = submitButton();
+    click(startsAtField(1));
+    click(submitButton());
+  });
+
+  describe("service field", () => {
     const findOption = (selectBox: HTMLSelectElement, textContent: string) => {
       const options = Array.from(selectBox.childNodes);
       return options.find(
@@ -75,7 +118,7 @@ describe("AppointmentForm", () => {
         <AppointmentForm
           original={blankAppointment}
           availableTimeSlots={availableTimeSlots}
-          checkedTimeSlot={availableTimeSlots[0]}
+          onSubmit={() => {}}
         />
       );
       expect(field("service")).not.toBeNull();
@@ -87,7 +130,7 @@ describe("AppointmentForm", () => {
         <AppointmentForm
           original={blankAppointment}
           availableTimeSlots={availableTimeSlots}
-          checkedTimeSlot={availableTimeSlots[0]}
+          onSubmit={() => {}}
         />
       );
       const firstOption = field("service").childNodes[0] as HTMLSelectElement;
@@ -100,7 +143,7 @@ describe("AppointmentForm", () => {
           selectableServices={services}
           original={blankAppointment}
           availableTimeSlots={availableTimeSlots}
-          checkedTimeSlot={availableTimeSlots[0]}
+          onSubmit={() => {}}
         />
       );
       const labels = labelsOfAllOptions(field("service")).slice(1);
@@ -115,7 +158,7 @@ describe("AppointmentForm", () => {
           selectableServices={services}
           original={appointment}
           availableTimeSlots={availableTimeSlots}
-          checkedTimeSlot={availableTimeSlots[0]}
+          onSubmit={() => {}}
         />
       );
 
@@ -132,7 +175,7 @@ describe("AppointmentForm", () => {
           <AppointmentForm
             original={blankAppointment}
             availableTimeSlots={availableTimeSlots}
-            checkedTimeSlot={availableTimeSlots[0]}
+            onSubmit={() => {}}
           />
         );
 
@@ -147,7 +190,7 @@ describe("AppointmentForm", () => {
             salonOpensAt={9}
             salonClosesAt={11}
             availableTimeSlots={availableTimeSlots}
-            checkedTimeSlot={availableTimeSlots[0]}
+            onSubmit={() => {}}
           />
         );
 
@@ -162,7 +205,7 @@ describe("AppointmentForm", () => {
           <AppointmentForm
             original={blankAppointment}
             availableTimeSlots={availableTimeSlots}
-            checkedTimeSlot={availableTimeSlots[0]}
+            onSubmit={() => {}}
           />
         );
         const headerRow = element("thead > tr");
@@ -176,7 +219,7 @@ describe("AppointmentForm", () => {
             original={blankAppointment}
             today={specificDate}
             availableTimeSlots={availableTimeSlots}
-            checkedTimeSlot={availableTimeSlots[0]}
+            onSubmit={() => {}}
           />
         );
 
@@ -207,7 +250,7 @@ describe("AppointmentForm", () => {
             original={blankAppointment}
             availableTimeSlots={availableTimeSlots}
             today={today}
-            checkedTimeSlot={availableTimeSlots[0]}
+            onSubmit={() => {}}
           />
         );
         const buttons = cellsWithRadioButtons();
@@ -219,7 +262,7 @@ describe("AppointmentForm", () => {
           <AppointmentForm
             original={blankAppointment}
             availableTimeSlots={[]}
-            checkedTimeSlot={availableTimeSlots[0]}
+            onSubmit={() => {}}
           />
         );
 
@@ -232,7 +275,7 @@ describe("AppointmentForm", () => {
             original={blankAppointment}
             availableTimeSlots={availableTimeSlots}
             today={today}
-            checkedTimeSlot={availableTimeSlots[0]}
+            onSubmit={() => {}}
           />
         );
 
@@ -254,7 +297,7 @@ describe("AppointmentForm", () => {
           original={appointment}
           availableTimeSlots={availableTimeSlots}
           today={today}
-          checkedTimeSlot={appointment}
+          onSubmit={() => {}}
         />
       );
 

@@ -1,6 +1,5 @@
-import { Appointment } from "./types/customer";
-
-type TimeSlot = { startsAt: number };
+import { useCallback, useState } from "react";
+import { Appointment, TimeSlot } from "./types/customer";
 
 type AppointmentFromProps = {
   selectableServices?: string[];
@@ -9,7 +8,7 @@ type AppointmentFromProps = {
   salonClosesAt?: number;
   today?: Date;
   availableTimeSlots: TimeSlot[];
-  checkedTimeSlot: TimeSlot;
+  onSubmit: ({ startsAt }: Appointment) => void;
 };
 export const AppointmentForm = ({
   selectableServices = [
@@ -25,32 +24,51 @@ export const AppointmentForm = ({
   salonClosesAt = 19,
   today = new Date(),
   availableTimeSlots,
-  checkedTimeSlot,
-}: AppointmentFromProps) => (
-  <div>
-    <form>
-      <select
-        name="service"
-        id="service"
-        defaultValue={original.service}
-        aria-readonly
-      >
-        <option></option>
-        {selectableServices.map((s) => (
-          <option key={s}>{s}</option>
-        ))}
-      </select>
-      <TimeSlotTable
-        salonOpensAt={salonOpensAt}
-        salonClosesAt={salonClosesAt}
-        today={today}
-        availableTimeSlots={availableTimeSlots}
-        checkedTimeSlot={checkedTimeSlot}
-      />
-    </form>
-    <input type="submit" value="Add" />
-  </div>
-);
+  onSubmit,
+}: AppointmentFromProps) => {
+  const [appointment, setAppointment] = useState(original);
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    onSubmit(appointment);
+  };
+
+  const handleStartsAtChange = useCallback(
+    ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) =>
+      setAppointment((appointment) => ({
+        ...appointment,
+        startsAt: parseInt(value),
+      })),
+    []
+  );
+
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <select
+          name="service"
+          id="service"
+          defaultValue={original.service}
+          aria-readonly
+        >
+          <option></option>
+          {selectableServices.map((s) => (
+            <option key={s}>{s}</option>
+          ))}
+        </select>
+        <TimeSlotTable
+          salonOpensAt={salonOpensAt}
+          salonClosesAt={salonClosesAt}
+          today={today}
+          availableTimeSlots={availableTimeSlots}
+          checkedTimeSlot={appointment.startsAt}
+          handleChange={handleStartsAtChange}
+        />
+        <input type="submit" value="Add" />
+      </form>
+    </div>
+  );
+};
 
 const timeIncrements = (
   numTimes: number,
@@ -98,7 +116,8 @@ type TimeSlotTableProps = {
   salonClosesAt: number;
   today: Date;
   availableTimeSlots: TimeSlot[];
-  checkedTimeSlot: TimeSlot;
+  checkedTimeSlot: number;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 const TimeSlotTable = ({
   salonOpensAt,
@@ -106,6 +125,7 @@ const TimeSlotTable = ({
   today,
   availableTimeSlots,
   checkedTimeSlot,
+  handleChange,
 }: TimeSlotTableProps) => {
   const timeSlots = dailyTimeSlots(salonOpensAt, salonClosesAt);
   const dates = weeklyDateValues(today);
@@ -131,6 +151,7 @@ const TimeSlotTable = ({
                   date={date}
                   timeSlot={timeSlot}
                   checkedTimeSlot={checkedTimeSlot}
+                  handleChange={handleChange}
                 />
               </td>
             ))}
@@ -145,16 +166,18 @@ type RadioButtonProps = {
   availableTimeSlots: TimeSlot[];
   date: number;
   timeSlot: number;
-  checkedTimeSlot: TimeSlot;
+  checkedTimeSlot: number;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 const RadioButtonIfAvailable = ({
   availableTimeSlots,
   date,
   timeSlot,
   checkedTimeSlot,
+  handleChange,
 }: RadioButtonProps) => {
   const startsAt = mergeDateAndTime(date, timeSlot);
-  const isChecked = startsAt === checkedTimeSlot.startsAt;
+  const isChecked = startsAt === checkedTimeSlot;
 
   if (
     availableTimeSlots.some(
@@ -167,6 +190,7 @@ const RadioButtonIfAvailable = ({
         name="startsAt"
         value={startsAt}
         checked={isChecked}
+        onChange={handleChange}
       />
     );
   }
