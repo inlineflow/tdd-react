@@ -2,10 +2,15 @@ import { matcherHint, printExpected, printReceived } from "jest-matcher-utils";
 import { HTMLInputTypeAttribute } from "react";
 
 export const toBeInputOfType = (
-  received: HTMLInputElement,
+  received: HTMLElement,
   expected: HTMLInputTypeAttribute
 ) => {
-  const pass = received.type === expected;
+  let pass: boolean;
+  if (!(received instanceof HTMLInputElement) || received.type !== expected) {
+    pass = false;
+  } else {
+    pass = true;
+  }
 
   const sourceHint = () => {
     matcherHint("toBeInputOfType", "element", printExpected(expected), {
@@ -13,7 +18,8 @@ export const toBeInputOfType = (
     });
   };
 
-  const actualTypeHint = () => `Actual type: ${printReceived(received.type)}`;
+  const actualTypeHint = () =>
+    `Actual type: ${printReceived((received as HTMLInputElement).type)}`;
 
   const message = () => [sourceHint(), actualTypeHint()].join("\n\n");
 

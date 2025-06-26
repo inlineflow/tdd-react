@@ -12,4 +12,10 @@ describe("toBeInputOfTypeMatcher", () => {
 
     expect(element).not.toBeInputOfType("radio");
   });
+
+  it("doesn't match elements that are not inputs", () => {
+    const element = document.createElement("select");
+    // element.type = "radio";
+    expect(element).not.toBeInputOfType("text");
+  });
 });
