@@ -120,5 +120,40 @@ describe("AppointmentForm", () => {
       expect(dates[1]).toContainText("Sun 02");
       expect(dates[6]).toContainText("Fri 07");
     });
+
+    const cellsWithRadioButtons = () =>
+      elements("input[type=radio]").map((el) =>
+        elements("td").indexOf(el.parentElement as HTMLTableCellElement)
+      );
+
+    it("renders radio button in the correct table cell positions", () => {
+      const oneDayInMs = 24 * 60 * 60 * 1000;
+      const today = new Date();
+      const tomorrow = new Date(today.getTime() + oneDayInMs);
+
+      const availableTimeSlots = [
+        { startsAt: today.setHours(9, 0, 0, 0) },
+        { startsAt: today.setHours(9, 30, 0, 0) },
+        { startsAt: tomorrow.setHours(9, 30, 0, 0) },
+      ];
+
+      render(
+        <AppointmentForm
+          original={blankAppointment}
+          availableTimeSlots={availableTimeSlots}
+          today={today}
+        />
+      );
+      const buttons = cellsWithRadioButtons();
+      expect(buttons).toEqual([0, 7, 8]);
+    });
+
+    it("doesn't render radio controls for unavailable time slots", () => {
+      render(
+        <AppointmentForm original={blankAppointment} availableTimeSlots={[]} />
+      );
+
+      expect(elements("input[type=radio]")).toHaveLength(0);
+    });
   });
 });

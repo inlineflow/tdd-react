@@ -6,6 +6,7 @@ type AppointmentFromProps = {
   salonOpensAt?: number;
   salonClosesAt?: number;
   today?: Date;
+  availableTimeSlots?: { startsAt: number }[];
 };
 export const AppointmentForm = ({
   selectableServices = [
@@ -20,13 +21,14 @@ export const AppointmentForm = ({
   salonOpensAt = 9,
   salonClosesAt = 19,
   today = new Date(),
+  availableTimeSlots,
 }: AppointmentFromProps) => (
   <div>
     <form>
       <select
         name="service"
         id="service"
-        value={original.service}
+        defaultValue={original.service}
         aria-readonly
       >
         <option></option>
@@ -38,6 +40,7 @@ export const AppointmentForm = ({
         salonOpensAt={salonOpensAt}
         salonClosesAt={salonClosesAt}
         today={today}
+        availableTimeSlots={availableTimeSlots}
       />
     </form>
   </div>
@@ -74,15 +77,27 @@ const toShortDate = (timestamp: number) => {
   return `${day} ${dayOfMonth}`;
 };
 
+const mergeDateAndTime = (date: number, timeSlot: number) => {
+  const time = new Date(timeSlot);
+  return new Date(date).setHours(
+    time.getHours(),
+    time.getMinutes(),
+    time.getSeconds(),
+    time.getMilliseconds()
+  );
+};
+
 type TimeSlotTableProps = {
   salonOpensAt: number;
   salonClosesAt: number;
   today: Date;
+  availableTimeSlots?: { startsAt: number }[];
 };
 const TimeSlotTable = ({
   salonOpensAt,
   salonClosesAt,
   today,
+  availableTimeSlots = [],
 }: TimeSlotTableProps) => {
   const timeSlots = dailyTimeSlots(salonOpensAt, salonClosesAt);
   const dates = weeklyDateValues(today);
@@ -101,6 +116,18 @@ const TimeSlotTable = ({
         {timeSlots.map((timeSlot) => (
           <tr key={timeSlot}>
             <th>{toTimeValue(timeSlot)}</th>
+            {dates.map((date) => (
+              <td key={date}>
+                {availableTimeSlots.some(
+                  (availableTimeSlot) =>
+                    availableTimeSlot.startsAt ===
+                    mergeDateAndTime(date, timeSlot)
+                ) ? (
+                  <input type="radio" />
+                ) : null}
+                )
+              </td>
+            ))}
           </tr>
         ))}
       </tbody>
