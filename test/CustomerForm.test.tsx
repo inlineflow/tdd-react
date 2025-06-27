@@ -15,7 +15,11 @@ import { Customer } from "../src/types/customer";
 
 describe("CustomerForm", () => {
   const originalFetch = global.fetch;
-  let fetchSpy;
+  let fetchSpy: {
+    fn: any;
+    receivedArguments?: () => unknown[];
+    receivedArgument?: (n: number) => unknown;
+  };
   beforeEach(() => {
     initializeReactContainer();
     fetchSpy = spy();
@@ -47,10 +51,36 @@ describe("CustomerForm", () => {
   });
 
   it("prevents the default action when submitting the form", () => {
-    render(<CustomerForm original={blankCustomer} onSubmit={() => {}} />);
+    render(<CustomerForm original={blankCustomer} />);
     const event = submit(form());
 
     expect(event.defaultPrevented).toBe(true);
+  });
+
+  it("sends request to POST /customers when submitting the form", () => {
+    render(<CustomerForm original={blankCustomer} />);
+    click(submitButton());
+    expect(fetchSpy).toBeCalledWith(
+      "/customers",
+      expect.objectContaining({
+        method: "POST",
+      })
+    );
+  });
+
+  it("calls fetch with the right configuration", () => {
+    render(<CustomerForm original={blankCustomer} />);
+
+    click(submitButton());
+    expect(fetchSpy).toBeCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+    );
   });
 
   const itRendersATextBox = (fieldName: string) => {
@@ -59,7 +89,6 @@ describe("CustomerForm", () => {
       expect(field(fieldName)).not.toBeNull();
       expect(field(fieldName).tagName).toEqual("INPUT");
       expect(field(fieldName).type).toEqual("text");
-      // expect(element("form")).not.toBeNull();
     });
   };
 
@@ -105,19 +134,37 @@ describe("CustomerForm", () => {
     });
   };
 
-  const itSavesTheValueWhenSubmitted = (
-    fieldName: keyof Customer,
-    value: string
-  ) => {
+  const itSubmitsExistingValue = (fieldName: keyof Customer, value: string) => {
     it("saves existing value when submitted", () => {
-      const submitSpy = spy();
       const customer = { ...blankCustomer };
       customer[fieldName] = value;
-      render(<CustomerForm original={customer} onSubmit={submitSpy.fn} />);
+      render(<CustomerForm original={customer} />);
       click(submitButton());
-      expect(submitSpy).toBeCalledWith(customer);
+
+      expect(fetchSpy).toBeCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          body: JSON.stringify(customer),
+        })
+      );
     });
   };
+
+  const itSubmitsNewValue = (fieldName: keyof Customer, value: string) =>
+    it("saves new value when submitted", () => {
+      const customer = { ...blankCustomer };
+      customer[fieldName] = value;
+      render(<CustomerForm original={blankCustomer} />);
+      change(field(fieldName), value);
+      click(submitButton());
+
+      expect(fetchSpy).toBeCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          body: JSON.stringify(customer),
+        })
+      );
+    });
 
   describe("first name field", () => {
     itRendersATextBox("firstName");
@@ -125,7 +172,8 @@ describe("CustomerForm", () => {
     itRendersALabel("firstName", "First name");
     itAssignsAnID("firstName");
     itRendersASubmitButton();
-    itSavesTheValueWhenSubmitted("firstName", "Jamie");
+    itSubmitsExistingValue("firstName", "Jamie");
+    itSubmitsNewValue("firstName", "Ronald");
   });
 
   describe("last name field", () => {
@@ -134,7 +182,8 @@ describe("CustomerForm", () => {
     itRendersALabel("lastName", "Last name");
     itAssignsAnID("lastName");
     itRendersASubmitButton();
-    itSavesTheValueWhenSubmitted("lastName", "Swanson");
+    itSubmitsExistingValue("lastName", "Swanson");
+    itSubmitsNewValue("lastName", "McDonalds");
   });
 
   describe("phone number field", () => {
@@ -143,6 +192,7 @@ describe("CustomerForm", () => {
     itRendersALabel("phoneNumber", "Phone number");
     itAssignsAnID("phoneNumber");
     itRendersASubmitButton();
-    itSavesTheValueWhenSubmitted("phoneNumber", "1234567");
+    itSubmitsExistingValue("phoneNumber", "1234567");
+    itSubmitsNewValue("phoneNumber", "7655555");
   });
 });

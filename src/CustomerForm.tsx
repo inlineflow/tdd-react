@@ -4,12 +4,10 @@ import "../global.css";
 
 type Props = {
   original?: Customer;
-  onSubmit?: (customer: Customer) => void;
 };
 
 export const CustomerForm = ({
   original = { firstName: "", lastName: "", phoneNumber: "" },
-  onSubmit,
 }: Props) => {
   const [customer, setCustomer] = useState(original);
 
@@ -25,12 +23,16 @@ export const CustomerForm = ({
     setCustomer({ ...customer, phoneNumber: e.target.value });
   };
 
-  const handleSubmit = onSubmit
-    ? (event: React.FormEvent) => {
-        event.preventDefault();
-        onSubmit(customer);
-      }
-    : () => {};
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    global.fetch("/customers", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(customer),
+    });
+  };
+
   return (
     <div className="bg-slate-300 m-auto mt-48 w-fit h-fit">
       <form

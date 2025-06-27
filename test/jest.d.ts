@@ -8,7 +8,7 @@ declare global {
       toContainText: (expectedText: string) => R;
       toHaveClass: (expectedClass: string) => R;
       toBeInputOfType: (expectedType: HTMLInputTypeAttribute) => R;
-      toBeCalledWith: (arguments: any) => R;
+      toBeCalledWith: (...arguments: any) => R;
     }
   }
 }
