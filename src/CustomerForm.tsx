@@ -4,10 +4,12 @@ import "../global.css";
 
 type Props = {
   original?: Customer;
+  onSave?: (customer: Customer) => void;
 };
 
 export const CustomerForm = ({
   original = { firstName: "", lastName: "", phoneNumber: "" },
+  onSave,
 }: Props) => {
   const [customer, setCustomer] = useState(original);
 
@@ -23,14 +25,17 @@ export const CustomerForm = ({
     setCustomer({ ...customer, phoneNumber: e.target.value });
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    global.fetch("/customers", {
+    const result = await global.fetch("/customers", {
       method: "POST",
       credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(customer),
     });
+
+    const customerWithId = await result.json();
+    if (onSave) onSave(customerWithId);
   };
 
   return (

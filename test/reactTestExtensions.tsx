@@ -88,3 +88,10 @@ export const change = (target: HTMLElement, value: string) => {
 export const labelFor = (fieldName: string) => {
   return element(`label[for=${fieldName}]`);
 };
+
+export const clickAndWait = async (
+  element: HTMLInputElement | HTMLButtonElement
+) => act(async () => click(element));
+
+export const submitAndWait = async (formElement: HTMLElement) =>
+  act(async () => submit(formElement));
