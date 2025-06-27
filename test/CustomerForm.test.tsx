@@ -42,6 +42,8 @@ describe("CustomerForm", () => {
       json: () => Promise.resolve(body),
     });
 
+  const fetchResponseError = () => Promise.resolve({ ok: false });
+
   const bodyOfLastFetchRequest = () =>
     JSON.parse((fetchSpy.receivedArgument(1) as { body: string }).body);
 
@@ -111,6 +113,21 @@ describe("CustomerForm", () => {
     expect(saveSpy).toBeCalledWith(customer);
   });
 
+  it("does not notify onSave if the POST request returns an error", async () => {
+    fetchSpy.stubReturnValue(fetchResponseError());
+    const saveSpy = spy();
+
+    render(<CustomerForm original={blankCustomer} onSave={saveSpy.fn} />);
+    await clickAndWait(submitButton());
+
+    expect(saveSpy).not.toBeCalledWith();
+  });
+
+  it("renders an alert space", () => {
+    render(<CustomerForm original={blankCustomer} />);
+    expect(element("[role=alert]")).not.toBeNull();
+  });
+
   const itRendersATextBox = (fieldName: string) => {
     it("renders a field as a text box", () => {
       render(<CustomerForm original={blankCustomer} />);
@@ -119,6 +136,21 @@ describe("CustomerForm", () => {
       expect(field(fieldName).type).toEqual("text");
     });
   };
+
+  it("renders an error message when fetch call fails", async () => {
+    fetchSpy.stubReturnValue(fetchResponseError());
+
+    render(<CustomerForm original={blankCustomer} />);
+    await clickAndWait(submitButton());
+
+    expect(element("[role=alert]")).toContainText("error occured");
+  });
+
+  it("initially has no text in the alert space", () => {
+    render(<CustomerForm original={blankCustomer} />);
+
+    expect(element("[role=alert]")).not.toContainText("error occured");
+  });
 
   const itIncludesTheExistingValue = (
     fieldName: keyof Customer,
@@ -176,7 +208,6 @@ describe("CustomerForm", () => {
   const itSubmitsNewValue = (fieldName: keyof Customer, value: string) =>
     it("saves new value when submitted", async () => {
       render(<CustomerForm original={blankCustomer} />);
-      const body = document.body.innerHTML;
       change(field(fieldName), value);
       await clickAndWait(submitButton());
 

@@ -2,6 +2,10 @@ import { Customer } from "./types/customer";
 import { useState } from "react";
 import "../global.css";
 
+export const Error = ({ hasError }: { hasError: boolean }) => {
+  return <p role="alert">{hasError ? "An error occured during save." : ""}</p>;
+};
+
 type Props = {
   original?: Customer;
   onSave?: (customer: Customer) => void;
@@ -12,6 +16,7 @@ export const CustomerForm = ({
   onSave,
 }: Props) => {
   const [customer, setCustomer] = useState(original);
+  const [error, setError] = useState(false);
 
   const handleChangeFirstName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCustomer({ ...customer, firstName: e.target.value });
@@ -34,8 +39,12 @@ export const CustomerForm = ({
       body: JSON.stringify(customer),
     });
 
-    const customerWithId = await result.json();
-    if (onSave) onSave(customerWithId);
+    if (result.ok) {
+      const customerWithId = await result.json();
+      if (onSave) onSave(customerWithId);
+    } else {
+      setError(true);
+    }
   };
 
   return (
@@ -44,6 +53,7 @@ export const CustomerForm = ({
         onSubmit={(e) => handleSubmit(e)}
         className="flex flex-col p-5 min-w-fit gap-5"
       >
+        <Error hasError={error} />
         <div className="flex gap-10">
           <label htmlFor="firstName">First name</label>
           <input
