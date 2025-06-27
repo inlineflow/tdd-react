@@ -17,9 +17,13 @@ describe("CustomerForm", () => {
   const originalFetch = global.fetch;
   let fetchSpy: {
     fn: any;
-    receivedArguments?: () => unknown[];
-    receivedArgument?: (n: number) => unknown;
+    receivedArguments: () => unknown[];
+    receivedArgument: (n: number) => unknown;
   };
+
+  const bodyOfLastFetchRequest = () =>
+    JSON.parse((fetchSpy.receivedArgument(1) as { body: string }).body);
+
   beforeEach(() => {
     initializeReactContainer();
     fetchSpy = spy();
@@ -32,10 +36,15 @@ describe("CustomerForm", () => {
 
   const spy = <T,>() => {
     let receivedArguments: T[];
+    let returnValue: T | undefined;
     return {
-      fn: (...args: T[]) => (receivedArguments = args),
+      fn: (...args: T[]) => {
+        receivedArguments = args;
+        return returnValue;
+      },
       receivedArguments: () => receivedArguments,
       receivedArgument: (n: number) => receivedArguments[n],
+      stubReturnValue: (value: T) => (returnValue = value),
     };
   };
 
@@ -141,29 +150,19 @@ describe("CustomerForm", () => {
       render(<CustomerForm original={customer} />);
       click(submitButton());
 
-      expect(fetchSpy).toBeCalledWith(
-        expect.anything(),
-        expect.objectContaining({
-          body: JSON.stringify(customer),
-        })
-      );
+      expect(bodyOfLastFetchRequest()).toMatchObject(customer);
     });
   };
 
   const itSubmitsNewValue = (fieldName: keyof Customer, value: string) =>
     it("saves new value when submitted", () => {
-      const customer = { ...blankCustomer };
-      customer[fieldName] = value;
       render(<CustomerForm original={blankCustomer} />);
       change(field(fieldName), value);
       click(submitButton());
 
-      expect(fetchSpy).toBeCalledWith(
-        expect.anything(),
-        expect.objectContaining({
-          body: JSON.stringify(customer),
-        })
-      );
+      expect(bodyOfLastFetchRequest()).toMatchObject({
+        [fieldName]: value,
+      });
     });
 
   describe("first name field", () => {
