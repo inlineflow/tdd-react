@@ -14,9 +14,27 @@ import { CustomerForm } from "../src/CustomerForm";
 import { Customer } from "../src/types/customer";
 
 describe("CustomerForm", () => {
+  const originalFetch = global.fetch;
+  let fetchSpy;
   beforeEach(() => {
     initializeReactContainer();
+    fetchSpy = spy();
+    global.fetch = fetchSpy.fn as unknown as () => Promise<Response>;
   });
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+  });
+
+  const spy = <T,>() => {
+    let receivedArguments: T[];
+    return {
+      fn: (...args: T[]) => (receivedArguments = args),
+      receivedArguments: () => receivedArguments,
+      receivedArgument: (n: number) => receivedArguments[n],
+    };
+  };
+
   const blankCustomer: Customer = {
     firstName: "",
     lastName: "",
@@ -92,17 +110,12 @@ describe("CustomerForm", () => {
     value: string
   ) => {
     it("saves existing value when submitted", () => {
-      expect.hasAssertions();
-      render(
-        <CustomerForm
-          original={blankCustomer}
-          onSubmit={(customer: Customer) =>
-            expect(customer[fieldName]).toEqual(value)
-          }
-        />
-      );
-      change(field(fieldName), value);
+      const submitSpy = spy();
+      const customer = { ...blankCustomer };
+      customer[fieldName] = value;
+      render(<CustomerForm original={customer} onSubmit={submitSpy.fn} />);
       click(submitButton());
+      expect(submitSpy).toBeCalledWith(customer);
     });
   };
 
