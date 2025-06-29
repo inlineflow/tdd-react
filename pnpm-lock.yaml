@@ -17,6 +17,9 @@ importers:
       jest-matcher-utils:
         specifier: ^30.0.2
         version: 30.0.2
+      jest-mock:
+        specifier: ^30.0.2
+        version: 30.0.2
       react:
         specifier: ^19.1.0
         version: 19.1.0

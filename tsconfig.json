@@ -1,19 +1,25 @@
 {
-    "compilerOptions": {
-        "types": ["jest", "node"],
-        "jsx": "react-jsx",
-        // "allowImportingTsExtensions": true,
-        "target": "es6",
-        "module": "commonjs",
-        "strict": true,
-        "moduleResolution": "node",
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true
-    },
-    "files": [
-        "./test/matchers/domMatchers.ts"
-    ],
-      "include": ["src/**/*.ts", "src/**/*.tsx", "test/**/*.ts","test/**/*.tsx", "test/**/*.d.ts", "test/jest.d.ts"],
-      "exclude": ["node_modules"]
+  "compilerOptions": {
+    "types": ["jest", "node"],
+    "jsx": "react-jsx",
+    // "allowImportingTsExtensions": true,
+    "target": "es6",
+    "module": "commonjs",
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "files": ["./test/matchers/domMatchers.ts"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "test/**/*.ts",
+    "test/**/*.tsx",
+    "test/**/*.d.ts",
+    "test/jest.d.ts",
+    "jest.setup.ts"
+  ],
+  "exclude": ["node_modules"]
 }

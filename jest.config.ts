@@ -1,21 +1,19 @@
-// jest.config.ts
 import type { Config } from "jest";
 
 const config: Config = {
-  preset: "ts-jest", // Enables TypeScript support in Jest
-  testEnvironment: "jsdom", // Sets up a browser-like environment
+  preset: "ts-jest",
+  testEnvironment: "jsdom",
   restoreMocks: true,
   setupFilesAfterEnv: [
     "<rootDir>/jest.setup.ts",
     "<rootDir>/test/matchers/domMatchers.ts",
-  ], // Points to the setup file for Jest-DOM matchers
+  ],
   moduleNameMapper: {
-    // '\\.(css|scss)$': 'identity-obj-proxy', // Mocks CSS/SCSS imports
-    "\\.(css|scss)$": "<rootDir>/test/__mocks__/styleMock.ts", // Mocks CSS/SCSS imports
-    "\\.(svg)$": "<rootDir>/__mocks__/svgMock.ts", // Mocks SVG imports (create this file)
+    "\\.(css|scss)$": "<rootDir>/test/__mocks__/styleMock.ts",
+    "\\.(svg)$": "<rootDir>/__mocks__/svgMock.ts",
   },
   transform: {
-    "^.+\\.(ts|tsx)$": "ts-jest", // Transforms TypeScript and TSX files
+    "^.+\\.(ts|tsx)$": "ts-jest",
   },
 };
 

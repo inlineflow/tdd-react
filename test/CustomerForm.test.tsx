@@ -12,6 +12,8 @@ import {
 } from "./reactTestExtensions";
 import { CustomerForm } from "../src/CustomerForm";
 import { Customer } from "../src/types/customer";
+import { fetchResponseError, fetchResponseOk } from "./builders/fetch";
+import { bodyOfLastFetchRequest } from "./spyHelpers";
 
 describe("CustomerForm", () => {
   const spy = <T,>() => {
@@ -36,27 +38,25 @@ describe("CustomerForm", () => {
     stubReturnValue: (value: unknown) => unknown;
   };
 
-  const fetchResponseOk = (body: any) =>
-    Promise.resolve({
-      ok: true,
-      json: () => Promise.resolve(body),
-    });
+  // const fetchResponseError = () => Promise.resolve({ ok: false });
 
-  const fetchResponseError = () => Promise.resolve({ ok: false });
-
-  const bodyOfLastFetchRequest = () =>
-    JSON.parse((fetchSpy.receivedArgument(1) as { body: string }).body);
+  // const bodyOfLastFetchRequest = () =>
+  //   JSON.parse((fetchSpy.receivedArgument(1) as { body: string }).body);
 
   beforeEach(() => {
     initializeReactContainer();
-    fetchSpy = spy();
-    global.fetch = fetchSpy.fn as unknown as () => Promise<Response>;
-    fetchSpy.stubReturnValue(fetchResponseOk({}));
+    global.fetch = jest
+      .spyOn(global, "fetch")
+      .mockResolvedValue(fetchResponseOk({})) as jest.Mock;
   });
+  // fetchSpy = spy();
+  // global.fetch = fetchSpy.fn as unknown as () => Promise<Response>;
+  // global.fetch.mockResolvedValue(fetchResponseOk({}));
+  // });
 
-  afterEach(() => {
-    global.fetch = originalFetch;
-  });
+  // afterEach(() => {
+  //   global.fetch = originalFetch;
+  // });
 
   const blankCustomer: Customer = {
     firstName: "",
@@ -79,7 +79,7 @@ describe("CustomerForm", () => {
   it("sends request to POST /customers when submitting the form", async () => {
     render(<CustomerForm original={blankCustomer} />);
     await clickAndWait(submitButton());
-    expect(fetchSpy).toBeCalledWith(
+    expect(global.fetch).toHaveBeenCalledWith(
       "/customers",
       expect.objectContaining({
         method: "POST",
@@ -91,7 +91,7 @@ describe("CustomerForm", () => {
     render(<CustomerForm original={blankCustomer} />);
 
     await clickAndWait(submitButton());
-    expect(fetchSpy).toBeCalledWith(
+    expect(global.fetch).toHaveBeenCalledWith(
       expect.anything(),
       expect.objectContaining({
         credentials: "same-origin",
@@ -104,28 +104,46 @@ describe("CustomerForm", () => {
 
   it("notifies onSave when form is submitted", async () => {
     const customer = { ...blankCustomer, id: 123 };
-    fetchSpy.stubReturnValue(fetchResponseOk(customer));
-    const saveSpy = spy();
+    (global.fetch as jest.Mock).mockResolvedValue(fetchResponseOk(customer));
+    const saveSpy = jest.fn();
 
-    render(<CustomerForm original={customer} onSave={saveSpy.fn} />);
+    render(<CustomerForm original={customer} onSave={saveSpy} />);
     await clickAndWait(submitButton());
 
-    expect(saveSpy).toBeCalledWith(customer);
+    expect(saveSpy).toHaveBeenCalledWith(customer);
   });
 
-  it("does not notify onSave if the POST request returns an error", async () => {
-    fetchSpy.stubReturnValue(fetchResponseError());
-    const saveSpy = spy();
+  describe("when POST request returns an error", () => {
+    beforeEach(() => {
+      (global.fetch as jest.Mock).mockResolvedValue(fetchResponseError());
+    });
 
-    render(<CustomerForm original={blankCustomer} onSave={saveSpy.fn} />);
-    await clickAndWait(submitButton());
+    it("renders an error message", async () => {
+      render(<CustomerForm original={blankCustomer} />);
+      await clickAndWait(submitButton());
 
-    expect(saveSpy).not.toBeCalledWith();
+      expect(element("[role=alert]")).toContainText("error occured");
+    });
+
+    it("does not notify onSave", async () => {
+      const saveSpy = jest.fn();
+
+      render(<CustomerForm original={blankCustomer} onSave={saveSpy} />);
+      await clickAndWait(submitButton());
+
+      expect(saveSpy).not.toHaveBeenCalled();
+    });
   });
 
   it("renders an alert space", () => {
     render(<CustomerForm original={blankCustomer} />);
     expect(element("[role=alert]")).not.toBeNull();
+  });
+
+  it("initially has no text in the alert space", () => {
+    render(<CustomerForm original={blankCustomer} />);
+
+    expect(element("[role=alert]")).not.toContainText("error occured");
   });
 
   const itRendersATextBox = (fieldName: string) => {
@@ -136,21 +154,6 @@ describe("CustomerForm", () => {
       expect(field(fieldName).type).toEqual("text");
     });
   };
-
-  it("renders an error message when fetch call fails", async () => {
-    fetchSpy.stubReturnValue(fetchResponseError());
-
-    render(<CustomerForm original={blankCustomer} />);
-    await clickAndWait(submitButton());
-
-    expect(element("[role=alert]")).toContainText("error occured");
-  });
-
-  it("initially has no text in the alert space", () => {
-    render(<CustomerForm original={blankCustomer} />);
-
-    expect(element("[role=alert]")).not.toContainText("error occured");
-  });
 
   const itIncludesTheExistingValue = (
     fieldName: keyof Customer,
