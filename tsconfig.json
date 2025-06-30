@@ -3,7 +3,7 @@
     "types": ["jest", "node"],
     "jsx": "react-jsx",
     // "allowImportingTsExtensions": true,
-    "target": "es6",
+    "target": "es2021",
     "module": "commonjs",
     "strict": true,
     "moduleResolution": "node",
