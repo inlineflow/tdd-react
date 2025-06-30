@@ -1,42 +1,101 @@
 import React from "react";
+// import { waitFor } from "@testing-library/react";
 import {
-    initializeReactContainer,
-    element,
-    renderAndWait,
-    render
-} from "./reactTestExtensions"
+  initializeReactContainer,
+  element,
+  renderAndWait,
+  render,
+} from "./reactTestExtensions";
 
-import {
-    AppointmentDaysViewLoader
-} from "../src/AppointmentsDaysViewLoader"
+import { AppointmentDaysViewLoader } from "../src/AppointmentsDaysViewLoader";
 
-import {
-    AppointmentDaysView
-} from "../src/AppointmentDaysView";
+import { AppointmentDaysView } from "../src/AppointmentDaysView";
+import { Appointment } from "../src/types/customer";
+import { today, todayAt } from "./builders/time";
+import { fetchResponseOk } from "./builders/fetch";
+import { waitFor } from "@testing-library/react";
 
 jest.mock("../src/AppointmentDaysView", () => ({
-    AppointmentDaysView: jest.fn(() => 
-        <div id="AppointmentDaysView"></div>
-    )
-}))
-
+  AppointmentDaysView: jest.fn(() => <div id="AppointmentDaysView"></div>),
+}));
 
 describe("AppointmentDaysViewLoader", () => {
-    beforeEach(() => {
-        initializeReactContainer();
-        // jest.restoreAllMocks();
-    })
+  const appointments: Appointment[] = [
+    {
+      startsAt: todayAt(9),
+      customer: {
+        firstName: "Jessica",
+        lastName: "",
+        phoneNumber: "",
+      },
+      stylist: "",
+      service: "",
+      notes: [],
+    },
+    {
+      startsAt: todayAt(10),
+      customer: {
+        firstName: "Fred",
+        lastName: "",
+        phoneNumber: "",
+      },
+      stylist: "",
+      service: "",
+      notes: [],
+    },
+  ];
+  beforeEach(() => {
+    initializeReactContainer();
+    jest
+      .spyOn(global, "fetch")
+      .mockResolvedValue(fetchResponseOk(appointments));
 
-    it("renders an AppointmentDaysView", async () => {
-        await render(<AppointmentDaysViewLoader />)
-        expect(
-            element("#AppointmentDaysView")
-        ).not.toBeNull();
-    })
+    // jest.restoreAllMocks();
+  });
 
-    it("initially passes an empty array to AppointmentsDaysView", async () => {
-        await renderAndWait(<AppointmentDaysViewLoader />)
+  //   afterEach(() => {
+  //     // fetchMock.mockRestore();
+  //     // jest.restoreAllMocks();
+  //     // (global.fetch as jest.Mock).mockReset();
+  //   });
 
-        expect(AppointmentDaysView).toHaveBeenCalledWith({appointments: [] }, undefined )
-    })
-})
+  it("renders an AppointmentDaysView", async () => {
+    await render(<AppointmentDaysViewLoader />);
+    expect(element("#AppointmentDaysView")).not.toBeNull();
+  });
+
+  it("initially passes an empty array to AppointmentsDaysView", async () => {
+    await renderAndWait(<AppointmentDaysViewLoader />);
+
+    expect(AppointmentDaysView).toHaveBeenCalledWith(
+      { appointments: [] },
+      undefined
+    );
+  });
+
+  it("fetches data when component mounts", async () => {
+    const from = todayAt(0);
+    const to = todayAt(23, 59, 59, 999);
+
+    await renderAndWait(<AppointmentDaysViewLoader today={today} />);
+
+    expect(global.fetch).toHaveBeenCalledWith(`/appointments/${from}-${to}`, {
+      method: "GET",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+    });
+  });
+
+  it("passes fetched appointments to AppointmentDaysView once they have loaded", async () => {
+    // (global.fetch as jest.Mock).mockClear();
+    await renderAndWait(<AppointmentDaysViewLoader />);
+
+    // await waitFor(() => {
+    // expect(AppointmentDaysView).toHaveBeenCalledTimes(2);
+    expect(AppointmentDaysView).toHaveBeenLastCalledWith(
+      { appointments },
+      undefined
+    );
+    // });
+  });
+});

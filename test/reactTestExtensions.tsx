@@ -96,7 +96,5 @@ export const clickAndWait = async (
 export const submitAndWait = async (formElement: HTMLElement) =>
   act(async () => submit(formElement));
 
-export const renderAndWait = (component: React.ReactNode) => 
-  act(async () => (
-    createRoot(container).render(component)
-  ))
+export const renderAndWait = async (component: React.ReactNode) =>
+  await act(async () => createRoot(container).render(component));
