@@ -24,6 +24,7 @@ jest.mock("../src/AppointmentDaysView", () => ({
 describe("AppointmentDaysViewLoader", () => {
     beforeEach(() => {
         initializeReactContainer();
+        // jest.restoreAllMocks();
     })
 
     it("renders an AppointmentDaysView", async () => {
@@ -34,8 +35,8 @@ describe("AppointmentDaysViewLoader", () => {
     })
 
     it("initially passes an empty array to AppointmentsDaysView", async () => {
-        await render(<AppointmentDaysViewLoader />)
+        await renderAndWait(<AppointmentDaysViewLoader />)
 
-        expect(AppointmentDaysView).toHaveBeenCalledWith({appointments: []} )
+        expect(AppointmentDaysView).toHaveBeenCalledWith({appointments: [] }, undefined )
     })
 })
