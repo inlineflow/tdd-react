@@ -1,14 +1,17 @@
 import { log } from "console";
 import { act, ReactNode } from "react";
-import { Container, createRoot } from "react-dom/client";
+import { Container, createRoot, Root } from "react-dom/client";
 
 export let container: Container;
+let reactRoot: Root;
 export const initializeReactContainer = () => {
   container = document.createElement("div");
   document.body.replaceChildren(container);
+
+  reactRoot = createRoot(container);
 };
 export const render = (component: ReactNode) =>
-  act(() => createRoot(container).render(component));
+  act(() => reactRoot.render(component));
 
 export const click = (element: HTMLButtonElement | HTMLInputElement) => {
   act(() => element.click());
@@ -97,4 +100,4 @@ export const submitAndWait = async (formElement: HTMLElement) =>
   act(async () => submit(formElement));
 
 export const renderAndWait = async (component: React.ReactNode) =>
-  await act(async () => createRoot(container).render(component));
+  await act(async () => reactRoot.render(component));

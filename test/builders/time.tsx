@@ -10,7 +10,7 @@ export const todayAt = (
   return new Date(today).setHours(hours, minutes, seconds, milliseconds);
 };
 
-const tomorrow = new Date(today.getTime() + oneDayInMs);
+export const tomorrow = new Date(today.getTime() + oneDayInMs);
 export const tomorrowAt = (
   hours: number,
   minutes = 0,
