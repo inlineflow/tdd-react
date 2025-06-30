@@ -1,6 +1,6 @@
 import {
   AppointmentEntry,
-  AppointmentsDayView,
+  AppointmentDaysView,
 } from "../src/AppointmentDaysView";
 import type { Appointment } from "../src/types/customer";
 import { sampleAppointments } from "../src/sampleData";
@@ -79,31 +79,31 @@ describe("AppointmentsDayView", () => {
   });
 
   it("renders a div with the right id", () => {
-    render(<AppointmentsDayView appointments={[]} />);
+    render(<AppointmentDaysView appointments={[]} />);
 
     expect(element("div#appointmentsDayView")).not.toBeNull();
   });
 
   it("renders an ol element to display appointments", () => {
-    render(<AppointmentsDayView appointments={[]} />);
+    render(<AppointmentDaysView appointments={[]} />);
 
     expect(element("ol")).not.toBeNull();
   });
 
   it("renders an li for each appointment", () => {
-    render(<AppointmentsDayView appointments={appointments} />);
+    render(<AppointmentDaysView appointments={appointments} />);
 
     const listChildren = elements("li");
     expect(listChildren).toHaveLength(2);
   });
 
   it("renders the time of each appointment", () => {
-    render(<AppointmentsDayView appointments={appointments} />);
+    render(<AppointmentDaysView appointments={appointments} />);
     expect(textOf(elements("li"))).toEqual(["12:00", "13:00"]);
   });
 
   it("initially shows a message saying there are no appointments today", () => {
-    render(<AppointmentsDayView appointments={[]} />);
+    render(<AppointmentDaysView appointments={[]} />);
 
     expect(document.body).toContainText(
       "There are no appointments scheduled for today."
@@ -111,13 +111,13 @@ describe("AppointmentsDayView", () => {
   });
 
   it("selects the first appointment by default", () => {
-    render(<AppointmentsDayView appointments={appointments} />);
+    render(<AppointmentDaysView appointments={appointments} />);
 
     expect(document.body).toContainText("Ashley");
   });
 
   it("has a <button> element in each <li>", () => {
-    render(<AppointmentsDayView appointments={appointments} />);
+    render(<AppointmentDaysView appointments={appointments} />);
 
     const buttons = elements("li > *") as HTMLButtonElement[];
     expect(buttons).toHaveLength(2);
@@ -125,7 +125,7 @@ describe("AppointmentsDayView", () => {
   });
 
   it("renders another element when selected", () => {
-    render(<AppointmentsDayView appointments={appointments} />);
+    render(<AppointmentDaysView appointments={appointments} />);
     click(secondButton());
     // expect(secondButton()).toHaveClass("toggled");
 

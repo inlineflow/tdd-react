@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { AppointmentsDayView } from "./AppointmentDaysView";
+import { AppointmentDaysView } from "./AppointmentDaysView";
 import { sampleAppointments } from "./sampleData";
 import { CustomerForm } from "./CustomerForm";
 import { AppointmentForm } from "./AppointmentForm";

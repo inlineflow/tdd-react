@@ -24,7 +24,7 @@ export const AppointmentEntry = ({
   </div>
 );
 
-export const AppointmentsDayView = ({
+export const AppointmentDaysView = ({
   appointments,
 }: {
   appointments: Appointment[];
