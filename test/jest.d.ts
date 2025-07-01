@@ -11,6 +11,8 @@ declare global {
       toContainText: (expectedText: string) => R;
       toHaveClass: (expectedClass: string) => R;
       toBeInputOfType: (expectedType: HTMLInputTypeAttribute) => R;
+      toBeRenderedWithProps: (expectedProps: object) => R;
+      toBeRendered: () => R;
     }
   }
 }

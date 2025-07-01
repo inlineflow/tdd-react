@@ -10,6 +10,9 @@ export const initializeReactContainer = () => {
 
   reactRoot = createRoot(container);
 };
+
+export const prettyJSON = (props: object) => JSON.stringify(props, null, 2);
+
 export const render = (component: ReactNode) =>
   act(() => reactRoot.render(component));
 
@@ -101,5 +104,3 @@ export const submitAndWait = async (formElement: HTMLElement) =>
 
 export const renderAndWait = async (component: React.ReactNode) =>
   await act(async () => reactRoot.render(component));
-
-// export const prettyJSON = (props: object) => JSON.stringify(props, null, 2);

@@ -1,7 +1,7 @@
 import { equals } from "@jest/expect-utils";
 import { matcherHint, printExpected } from "jest-matcher-utils";
-// import { prettyJSON } from "../reactTestExtensions";
-const prettyJSON = (props: object) => JSON.stringify(props, null, 2);
+import { prettyJSON } from "../reactTestExtensions";
+// const prettyJSON = (props: object) => JSON.stringify(props, null, 2);
 
 export const toBeRenderedWithProps = (
   mockedComponent: jest.Mock,

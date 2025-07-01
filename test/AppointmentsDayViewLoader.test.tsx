@@ -90,10 +90,7 @@ describe("AppointmentDaysViewLoader", () => {
     await renderAndWait(<AppointmentDaysViewLoader />);
 
     // expect(AppointmentDaysView).toHaveBeenCalledTimes(2);
-    expect(AppointmentDaysView).toHaveBeenLastCalledWith(
-      { appointments },
-      undefined
-    );
+    expect(AppointmentDaysView).toBeRenderedWithProps({ appointments });
   });
 
   it("re-requests appointment when today prop changes", async () => {
