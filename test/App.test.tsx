@@ -1,11 +1,22 @@
 import { App } from "../src/App";
 import { AppointmentDaysViewLoader } from "../src/AppointmentsDaysViewLoader";
-import { initializeReactContainer, render } from "./reactTestExtensions";
+import {
+  click,
+  element,
+  initializeReactContainer,
+  render,
+} from "./reactTestExtensions";
+import { CustomerForm } from "../src/CustomerForm";
+import { blankCustomer } from "./builders/customer";
 
 jest.mock("../src/AppointmentsDaysViewLoader", () => ({
   AppointmentDaysViewLoader: jest.fn(() => (
     <div id="AppointmentDaysViewLoader"></div>
   )),
+}));
+
+jest.mock("../src/CustomerForm", () => ({
+  CustomerForm: jest.fn(() => <div id="CustomerForm"></div>),
 }));
 
 describe("App", () => {
@@ -17,5 +28,46 @@ describe("App", () => {
     render(<App />);
 
     expect(AppointmentDaysViewLoader).toBeRendered();
+  });
+
+  it("has a menu bar", () => {
+    render(<App />);
+    expect(element("menu")).not.toBeNull();
+  });
+
+  it("has a button to initiate add customer and appointment action", () => {
+    render(<App />);
+    const firstButton = element("menu > li > button:first-of-type");
+    expect(firstButton).toContainText("Add customer and appointment");
+  });
+
+  const beginAddingCustomerAndAppointment = () =>
+    click(element("menu > li > button:first-of-type") as HTMLButtonElement);
+  it("displays the CustomerForm when the button is clicked", () => {
+    render(<App />);
+    beginAddingCustomerAndAppointment();
+    expect(element("#CustomerForm")).not.toBeNull();
+  });
+
+  it("passes a blank original customer object to CustomerForm", () => {
+    render(<App />);
+    beginAddingCustomerAndAppointment();
+    expect(CustomerForm).toBeRenderedWithProps(
+      expect.objectContaining({
+        original: blankCustomer,
+      })
+    );
+  });
+
+  it("hides the AppointmentsDayViewLoader when button is clicked", async () => {
+    render(<App />);
+    beginAddingCustomerAndAppointment();
+    expect(element("#AppointmentDaysViewLoader")).toBeNull();
+  });
+
+  it("hides the button bar when the CustomerForm is being displayed", async () => {
+    render(<App />);
+    beginAddingCustomerAndAppointment();
+    expect(element("menu")).toBeNull();
   });
 });
