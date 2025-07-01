@@ -12,6 +12,7 @@ import { blankCustomer } from "./builders/customer";
 import { AppointmentFormLoader } from "../src/AppointmentFormLoader";
 import { Customer } from "../src/types/customer";
 import { act } from "react";
+import { blankAppointment } from "./builders/appointment";
 
 jest.mock("../src/AppointmentsDaysViewLoader", () => ({
   AppointmentDaysViewLoader: jest.fn(() => (
@@ -99,5 +100,32 @@ describe("App", () => {
     saveCustomer();
 
     expect(element("#AppointmentFormLoader")).not.toBeNull();
+  });
+
+  // it("passes a blank original appointment object to CustomerForm", async () => {
+  //   render(<App />);
+  //   beginAddingCustomerAndAppointment();
+  //   saveCustomer();
+  //   expect(AppointmentFormLoader).toBeRenderedWithProps(
+  //     expect.objectContaining({
+  //       original: expect.objectContaining(blankAppointment),
+  //     })
+  //   );
+  // });
+
+  it("passes the customer to the AppointmentForm", async () => {
+    const customer = { ...blankCustomer, id: 123 };
+
+    render(<App />);
+    beginAddingCustomerAndAppointment();
+    saveCustomer();
+
+    expect(AppointmentFormLoader).toBeRenderedWithProps(
+      expect.objectContaining({
+        original: expect.objectContaining({
+          customer: customer,
+        }),
+      })
+    );
   });
 });

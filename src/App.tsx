@@ -1,8 +1,22 @@
 import { useCallback, useState } from "react";
 import { AppointmentDaysViewLoader } from "./AppointmentsDaysViewLoader";
 import { CustomerForm } from "./CustomerForm";
-import { Customer } from "./types/customer";
+import { Appointment, Customer } from "./types/customer";
 import { AppointmentFormLoader } from "./AppointmentFormLoader";
+// import { blankAppointment } from "../test/builders/appointment";
+
+export const blankAppointment: Appointment = {
+  startsAt: 0,
+  customer: {
+    id: 0,
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+  },
+  stylist: "",
+  service: "",
+  notes: [],
+};
 
 export const blankCustomer: Customer = {
   firstName: "",
@@ -13,8 +27,10 @@ export const blankCustomer: Customer = {
 
 export const App = () => {
   const [view, setView] = useState("dayView");
+  const [customer, setCustomer] = useState<Customer>(blankCustomer);
   const transitionToAddCustomer = useCallback(() => setView("addCustomer"), []);
-  const transitionToAddAppointment = useCallback(() => {
+  const transitionToAddAppointment = useCallback((customer: Customer) => {
+    setCustomer(customer);
     setView("addAppointment");
   }, []);
 
@@ -27,7 +43,14 @@ export const App = () => {
         />
       );
     case "addAppointment":
-      return <AppointmentFormLoader />;
+      return (
+        <AppointmentFormLoader
+          original={{
+            ...blankAppointment,
+            customer: customer,
+          }}
+        />
+      );
     default:
       return (
         <>

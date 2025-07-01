@@ -15,7 +15,7 @@ export const toBeRenderedWithProps = (
   const sourceHint = () =>
     matcherHint(
       "toBeRenderedWithProps",
-      "mocked component",
+      "actualProps",
       prettyJSON(expectedProps),
       //   printExpected(expectedProps).replaceAll("\\", ""),
       { isNot: pass }
