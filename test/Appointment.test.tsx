@@ -58,6 +58,7 @@ describe("AppointmentsDayView", () => {
         firstName: "Ashley",
         lastName: "Kaylegh",
         phoneNumber: "1234",
+        id: 0,
       },
       stylist: "Johnny",
       service: "Johnny's Hair Salon",
@@ -65,7 +66,12 @@ describe("AppointmentsDayView", () => {
     },
     {
       startsAt: today.setHours(13, 0),
-      customer: { firstName: "Jordan", lastName: "Wilds", phoneNumber: "2345" },
+      customer: {
+        firstName: "Jordan",
+        lastName: "Wilds",
+        phoneNumber: "2345",
+        id: 0,
+      },
       stylist: "Mark",
       service: "Mark's Hair Salon",
       notes: ["Come with treats"],

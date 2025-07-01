@@ -24,12 +24,13 @@ describe("AppointmentForm", () => {
     { startsAt: todayAt(9, 30) },
   ];
 
-  const blankAppointment = {
+  const blankAppointment: Appointment = {
     startsAt: availableTimeSlots[0].startsAt,
     customer: {
       firstName: "",
       lastName: "",
       phoneNumber: "-482-1937",
+      id: 0,
     },
     stylist: "",
     service: "",

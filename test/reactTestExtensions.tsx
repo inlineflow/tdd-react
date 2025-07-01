@@ -104,3 +104,10 @@ export const submitAndWait = async (formElement: HTMLElement) =>
 
 export const renderAndWait = async (component: React.ReactNode) =>
   await act(async () => reactRoot.render(component));
+
+export const propsOf = (mockComponent: jest.Mock) => {
+  const lastCall =
+    mockComponent.mock.calls[mockComponent.mock.calls.length - 1];
+
+  return lastCall[0];
+};

@@ -10,7 +10,8 @@ export const sampleAppointments: Appointment[] = [
         customer: {
             firstName: "Ashley",
             lastName: "Kaylegh",
-            phoneNumber: "555-482-1937"
+            phoneNumber: "555-482-1937",
+            id: 0
         },
         stylist: "Ethan Patel",
         service: "Deep Conditioning Treatment",
@@ -21,7 +22,8 @@ export const sampleAppointments: Appointment[] = [
         customer: {
             firstName: "Jordan",
             lastName: "Wilds",
-            phoneNumber: "555-761-0248"
+            phoneNumber: "555-761-0248",
+            id: 0
         },
         stylist: "Emma Johnson",
         service: "Hair Straightening",
@@ -32,7 +34,8 @@ export const sampleAppointments: Appointment[] = [
         customer: {
             firstName: "Casey",
             lastName: "Hawkins",
-            phoneNumber: "555-934-2816"
+            phoneNumber: "555-934-2816",
+            id: 0
         },
         stylist: "Sophia Lee",
         service: "Highlights",
@@ -43,7 +46,8 @@ export const sampleAppointments: Appointment[] = [
         customer: {
             firstName: "Charlie",
             lastName: "Bennett",
-            phoneNumber: "555-607-3490"
+            phoneNumber: "555-607-3490",
+            id: 0
         },
         stylist: "Maya Thompson",
         service: "Haircut and Styling",
@@ -54,7 +58,8 @@ export const sampleAppointments: Appointment[] = [
         customer: {
             firstName: "Jay",
             lastName: "Ellis",
-            phoneNumber: "555-473-8205"
+            phoneNumber: "555-473-8205",
+            id: 0
         },
         stylist: "Olivia Nguyen",
         service: "Men’s Haircut",
@@ -65,7 +70,8 @@ export const sampleAppointments: Appointment[] = [
         customer: {
             firstName: "Alex",
             lastName: "Grayson",
-            phoneNumber: "555-285-7661"
+            phoneNumber: "555-285-7661",
+            id: 0
         },
         stylist: "Noah Kim",
         service: "Perm",
@@ -76,7 +82,8 @@ export const sampleAppointments: Appointment[] = [
         customer: {
             firstName: "Jules",
             lastName: "Fletcher",
-            phoneNumber: "555-814-3982"
+            phoneNumber: "555-814-3982",
+            id: 0
         },
         stylist: "Isabella Martinez",
         service: "Blowout",
@@ -87,7 +94,8 @@ export const sampleAppointments: Appointment[] = [
         customer: {
             firstName: "Stevie",
             lastName: "Dawson",
-            phoneNumber: "555-992-1359"
+            phoneNumber: "555-992-1359",
+            id: 0
         },
         stylist: "James Wilson",
         service: "Balayage",
@@ -98,7 +106,8 @@ export const sampleAppointments: Appointment[] = [
         customer: {
             firstName: "Frankie",
             lastName: "Morrison",
-            phoneNumber: "555-368-7490"
+            phoneNumber: "555-368-7490",
+            id: 0
         },
         stylist: "Liam Garcia",
         service: "Color Treatment",

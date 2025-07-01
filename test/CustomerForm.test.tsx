@@ -16,27 +16,27 @@ import { fetchResponseError, fetchResponseOk } from "./builders/fetch";
 import { bodyOfLastFetchRequest } from "./spyHelpers";
 
 describe("CustomerForm", () => {
-  const spy = <T,>() => {
-    let receivedArguments: T[];
-    let returnValue: T | undefined;
-    return {
-      fn: (...args: T[]) => {
-        receivedArguments = args;
-        return returnValue;
-      },
-      receivedArguments: () => receivedArguments,
-      receivedArgument: (n: number) => receivedArguments[n],
-      stubReturnValue: (value: T) => (returnValue = value),
-    };
-  };
+  // const spy = <T,>() => {
+  //   let receivedArguments: T[];
+  //   let returnValue: T | undefined;
+  //   return {
+  //     fn: (...args: T[]) => {
+  //       receivedArguments = args;
+  //       return returnValue;
+  //     },
+  //     receivedArguments: () => receivedArguments,
+  //     receivedArgument: (n: number) => receivedArguments[n],
+  //     stubReturnValue: (value: T) => (returnValue = value),
+  //   };
+  // };
 
-  const originalFetch = global.fetch;
-  let fetchSpy: {
-    receivedArgument: any;
-    fn: any;
-    receivedArguments: () => unknown[];
-    stubReturnValue: (value: unknown) => unknown;
-  };
+  // const originalFetch = global.fetch;
+  // let fetchSpy: {
+  //   receivedArgument: any;
+  //   fn: any;
+  //   receivedArguments: () => unknown[];
+  //   stubReturnValue: (value: unknown) => unknown;
+  // };
 
   // const fetchResponseError = () => Promise.resolve({ ok: false });
 
@@ -62,6 +62,7 @@ describe("CustomerForm", () => {
     firstName: "",
     lastName: "",
     phoneNumber: "",
+    id: 0,
   };
 
   it("renders a form", () => {
@@ -157,11 +158,11 @@ describe("CustomerForm", () => {
 
   const itIncludesTheExistingValue = (
     fieldName: keyof Customer,
-    existing: string
+    existing: string | number
   ) => {
     it("includes the existing value for the first time", () => {
-      const customer = { ...blankCustomer };
-      customer[fieldName] = existing;
+      const customer: Customer = { ...blankCustomer };
+      (customer as any)[fieldName] = existing;
 
       render(<CustomerForm original={customer} />);
       expect(field(fieldName).value).toEqual(existing);
@@ -199,8 +200,8 @@ describe("CustomerForm", () => {
 
   const itSubmitsExistingValue = (fieldName: keyof Customer, value: string) => {
     it("saves existing value when submitted", async () => {
-      const customer = { ...blankCustomer };
-      customer[fieldName] = value;
+      const customer: Customer = { ...blankCustomer };
+      (customer as any)[fieldName] = value;
       render(<CustomerForm original={customer} />);
       await clickAndWait(submitButton());
 

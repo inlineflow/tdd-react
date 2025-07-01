@@ -4,10 +4,14 @@ import {
   click,
   element,
   initializeReactContainer,
+  propsOf,
   render,
 } from "./reactTestExtensions";
 import { CustomerForm } from "../src/CustomerForm";
 import { blankCustomer } from "./builders/customer";
+import { AppointmentFormLoader } from "../src/AppointmentFormLoader";
+import { Customer } from "../src/types/customer";
+import { act } from "react";
 
 jest.mock("../src/AppointmentsDaysViewLoader", () => ({
   AppointmentDaysViewLoader: jest.fn(() => (
@@ -17,6 +21,10 @@ jest.mock("../src/AppointmentsDaysViewLoader", () => ({
 
 jest.mock("../src/CustomerForm", () => ({
   CustomerForm: jest.fn(() => <div id="CustomerForm"></div>),
+}));
+
+jest.mock("../src/AppointmentFormLoader", () => ({
+  AppointmentFormLoader: jest.fn(() => <div id="AppointmentFormLoader"></div>),
 }));
 
 describe("App", () => {
@@ -43,6 +51,7 @@ describe("App", () => {
 
   const beginAddingCustomerAndAppointment = () =>
     click(element("menu > li > button:first-of-type") as HTMLButtonElement);
+
   it("displays the CustomerForm when the button is clicked", () => {
     render(<App />);
     beginAddingCustomerAndAppointment();
@@ -69,5 +78,26 @@ describe("App", () => {
     render(<App />);
     beginAddingCustomerAndAppointment();
     expect(element("menu")).toBeNull();
+  });
+
+  const exampleCustomer: Customer = {
+    id: 123,
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+  };
+  const saveCustomer = (customer = exampleCustomer) => {
+    act(() => {
+      const props = propsOf(CustomerForm as jest.Mock);
+      props.onSave(customer);
+    });
+  };
+
+  it("displays the AppointmentFormLoader after the CustomerForm is submitted", async () => {
+    render(<App />);
+    beginAddingCustomerAndAppointment();
+    saveCustomer();
+
+    expect(element("#AppointmentFormLoader")).not.toBeNull();
   });
 });

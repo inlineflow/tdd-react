@@ -12,7 +12,12 @@ type Props = {
 };
 
 export const CustomerForm = ({
-  original = { firstName: "", lastName: "", phoneNumber: "" },
+  original = {
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
+    id: 0,
+  },
   onSave,
 }: Props) => {
   const [customer, setCustomer] = useState(original);
